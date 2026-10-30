@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnos Nails Pro - Catálogo de Planes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fcf9f2;
+            --primary: #d68c9e;
+            --primary-dark: #c07285;
+            --gold: #d4b574;
+            --text-dark: #333333;
+            --text-light: #777777;
+            --border-color: #e6ddc5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-dark); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .portada-container {
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* --- Logo --- */
+        .logo-circle {
+            width: 120px; height: 120px; border: 1px solid var(--border-color); border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            margin: 0 auto 20px auto; background-color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden; padding: 10px;
+        }
+        .logo-svg { width: 35px; height: 35px; margin-bottom: 5px; }
+        .logo-svg path { stroke: url(#femGradient); }
+        .logo-svg circle, .logo-svg line { stroke: var(--gold); fill: var(--gold); }
+        .logo-title { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--primary-dark); line-height: 1.1; font-weight: 600; }
+        
+        h1 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 10px; color: var(--text-dark); }
+        .subtitle { font-size: 14px; color: var(--text-light); margin-bottom: 40px; }
+
+        /* --- Tarjetas de Planes --- */
+        .plan-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+
+        .plan-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(214, 140, 158, 0.15);
+        }
+
+        .plan-info { text-align: left; }
+        .plan-name { font-size: 18px; font-weight: 500; color: var(--primary-dark); margin-bottom: 5px; }
+        .plan-desc { font-size: 13px; color: var(--text-light); }
+        
+        .plan-icon {
+            font-size: 24px;
+            background: #fffafb;
+            padding: 10px;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #f0e6e8;
+        }
+
+        .admin-link {
+            display: block;
+            margin-top: 30px;
+            font-size: 13px;
+            color: var(--text-light);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--text-light);
+            padding-bottom: 2px;
+            transition: color 0.3s;
+        }
+        .admin-link:hover { color: var(--primary-dark); border-color: var(--primary-dark); }
+
+    </style>
+</head>
+<body>
+
+    <!-- SVG Gradient para el logo -->
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <linearGradient id="femGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#d68c9e;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#d4b574;stop-opacity:1" />
+        </linearGradient>
+    </svg>
+
+    <div class="portada-container">
+        
+        <div class="logo-circle">
+            <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 35 70 L 35 30 L 65 70 L 65 30" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="72" cy="25" r="4" />
+                <path d="M 72 15 L 72 35 M 62 25 L 82 25" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+            </svg>
+            <div class="logo-title">Turnos Nails<br>Pro</div>
+        </div>
+
+        <h1>Modelos de App</h1>
+        <p class="subtitle">Seleccioná un plan para ver la demo</p>
+
+        <!-- Botón Plan Esencial -->
+        <a href="./esencial/" class="plan-card">
+            <div class="plan-info">
+                <div class="plan-name">Plan Esencial</div>
+                <div class="plan-desc">Reserva directa por WhatsApp (Sin panel)</div>
+            </div>
+            <div class="plan-icon">??</div>
+        </a>
+
+        <!-- Botón Plan Profesional -->
+        <a href="./profesional/" class="plan-card">
+            <div class="plan-info">
+                <div class="plan-name">Plan Profesional</div>
+                <div class="plan-desc">Panel de administración y agenda</div>
+            </div>
+            <div class="plan-icon">??</div>
+        </a>
+
+        <!-- Botón Plan Premium -->
+        <a href="./premium/" class="plan-card">
+            <div class="plan-info">
+                <div class="plan-name">Plan Premium</div>
+                <div class="plan-desc">Panel completo + Estadísticas y ranking</div>
+            </div>
+            <div class="plan-icon">??</div>
+        </a>
+
+        <!-- Link a los paneles de Admin (Opcional para que no lo vea el cliente final, pero te sirve a vos) -->
+        <a href="./premium/admin.html" class="admin-link">Acceso rápido al Admin (Demo)</a>
+
+    </div>
+
+</body>
+</html>
