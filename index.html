@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turnos Nails Pro - Reserva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fcf9f2;
+            --primary: #d68c9e; /* Rosa palo elegante */
+            --primary-dark: #c07285;
+            --gold: #d4b574;
+            --text-dark: #333333;
+            --text-light: #777777;
+            --border-color: #e6ddc5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-dark); display: flex; justify-content: center; padding-bottom: 50px; }
+        .app-container { width: 100%; max-width: 450px; background-color: var(--bg-color); padding: 20px; }
+
+        /* --- Header / Logo SVG --- */
+        .logo-container { text-align: center; margin: 30px 0 40px 0; }
+        .logo-circle {
+            width: 150px; height: 150px; border: 1px solid var(--border-color); border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            margin: 0 auto; background-color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding-top: 5px; /* Ajuste óptico */
+        }
+
+        .logo-svg { width: 55px; height: 55px; margin-bottom: 5px; }
+        
+        /* Degradado para el logo */
+        .logo-svg path { stroke: url(#femGradient); }
+        .logo-svg circle, .logo-svg line { stroke: var(--gold); fill: var(--gold); }
+
+        .logo-title {
+            font-family: 'Playfair Display', serif; font-size: 20px; color: var(--primary-dark);
+            line-height: 1; font-weight: 600; letter-spacing: 0.5px; text-align: center;
+        }
+        .logo-subtitle { font-size: 9px; letter-spacing: 2px; color: var(--gold); margin-top: 4px; text-transform: uppercase; text-align: center; }
+
+        .main-title { font-family: 'Playfair Display', serif; font-size: 24px; font-style: italic; margin-bottom: 25px; color: var(--text-dark); }
+        .section-title { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
+
+        /* --- Servicios --- */
+        .service-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
+        .service-item {
+            display: flex; justify-content: space-between; align-items: center; padding: 15px;
+            background-color: white; border: 1px solid var(--border-color); border-radius: 10px; cursor: pointer; transition: all 0.3s ease;
+        }
+        .service-item:hover { border-color: var(--primary); }
+        .service-item.selected { border: 2px solid var(--primary); background-color: #fffafb; box-shadow: 0 2px 8px rgba(214, 140, 158, 0.15); }
+        .service-name { font-weight: 500; font-size: 15px; }
+        .service-time { font-weight: 300; font-size: 13px; color: var(--text-light); }
+        .service-price { color: var(--primary-dark); font-weight: 500; }
+
+        /* --- Días --- */
+        .days-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+        .days-container::-webkit-scrollbar { display: none; }
+        .day-card {
+            min-width: 65px; padding: 15px 10px; background-color: white; border: 1px solid var(--border-color);
+            border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.3s ease;
+        }
+        .day-card.selected { border: 2px solid var(--primary); background-color: #fffafb; }
+        .day-name { font-size: 11px; color: var(--text-light); text-transform: uppercase; }
+        .day-number { font-size: 20px; font-weight: 500; margin: 5px 0; }
+        .day-month { font-size: 11px; color: var(--text-light); text-transform: uppercase; }
+        .day-dot { width: 6px; height: 6px; background-color: #28a745; border-radius: 50%; margin: 5px auto 0; }
+
+        /* --- Horarios --- */
+        .times-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 30px; }
+        .time-btn { padding: 12px 0; background-color: white; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; cursor: pointer; text-align: center; }
+        .time-btn.selected { border: 2px solid var(--primary); color: var(--primary-dark); font-weight: 500; background-color: #fffafb; }
+
+        /* --- Formulario --- */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 15px; border: 1px solid var(--border-color); border-radius: 10px; background-color: white; font-size: 15px; color: var(--text-dark); }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+
+        /* --- Botón Submit --- */
+        .btn-submit {
+            width: 100%; padding: 18px; background-color: var(--primary); color: white; border: none;
+            border-radius: 10px; font-size: 16px; font-weight: 500; cursor: pointer; margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(214, 140, 158, 0.3); transition: background 0.3s;
+        }
+        .btn-submit:hover { background-color: var(--primary-dark); }
+        .footer-note { text-align: center; font-size: 12px; color: var(--text-light); margin-top: 20px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Logo Ficticio Mejorado -->
+        <div class="logo-container">
+            <div class="logo-circle">
+                <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Definimos el degradado rosa-dorado -->
+                    <defs>
+                        <linearGradient id="femGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#d68c9e;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#d4b574;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Letra N estilizada y centrada -->
+                    <path d="M 35 70 L 35 30 L 65 70 L 65 30" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    <!-- Destello femenino -->
+                    <circle cx="72" cy="25" r="4" />
+                    <path d="M 72 15 L 72 35 M 62 25 L 82 25" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+                </svg>
+                <div class="logo-title">Turnos Nails Pro</div>
+                <div class="logo-subtitle">Studio & Beauty</div>
+            </div>
+        </div>
+
+        <h1 class="main-title">Reservá tu turno</h1>
+
+        <!-- Paso 1: Servicios -->
+        <div class="section-title">1 . SERVICIO</div>
+        <div class="service-list" id="serviceList">
+            <div class="service-item" data-price="17000">
+                <span><span class="service-name">Manicura semipermanente</span> <span class="service-time">(150 min)</span></span>
+                <span class="service-price">$17.000</span>
+            </div>
+            <div class="service-item" data-price="19000">
+                <span><span class="service-name">Pedicura</span> <span class="service-time">(150 min)</span></span>
+                <span class="service-price">$19.000</span>
+            </div>
+            <div class="service-item" data-price="18000">
+                <span><span class="service-name">Capping Gel</span> <span class="service-time">(150 min)</span></span>
+                <span class="service-price">$18.000</span>
+            </div>
+            <div class="service-item" data-price="18000">
+                <span><span class="service-name">Polygel</span> <span class="service-time">(150 min)</span></span>
+                <span class="service-price">$18.000</span>
+            </div>
+            <div class="service-item" data-price="18000">
+                <span><span class="service-name">Dipping</span> <span class="service-time">(150 min)</span></span>
+                <span class="service-price">$18.000</span>
+            </div>
+            <div class="service-item" data-price="2000">
+                <span><span class="service-name">Retiro de otra colega</span> <span class="service-time">(60 min)</span></span>
+                <span class="service-price">$2.000</span>
+            </div>
+        </div>
+
+        <!-- Paso 2: Días -->
+        <div class="section-title">2 . DÍA</div>
+        <div class="days-container" id="daysList">
+            <div class="day-card selected">
+                <div class="day-name">Jue</div><div class="day-number">29</div><div class="day-month">Oct</div><div class="day-dot"></div>
+            </div>
+            <div class="day-card">
+                <div class="day-name">Vie</div><div class="day-number">30</div><div class="day-month">Oct</div><div class="day-dot"></div>
+            </div>
+            <div class="day-card">
+                <div class="day-name">Sáb</div><div class="day-number">31</div><div class="day-month">Oct</div><div class="day-dot"></div>
+            </div>
+            <div class="day-card">
+                <div class="day-name">Lun</div><div class="day-number">2</div><div class="day-month">Nov</div><div class="day-dot"></div>
+            </div>
+            <div class="day-card">
+                <div class="day-name">Mar</div><div class="day-number">3</div><div class="day-month">Nov</div><div class="day-dot"></div>
+            </div>
+        </div>
+
+        <!-- Paso 3: Horario -->
+        <div class="section-title">3 . HORARIO</div>
+        <div class="times-container" id="timesList">
+            <div class="time-btn">08:30</div><div class="time-btn">09:00</div><div class="time-btn">09:30</div>
+            <div class="time-btn">10:00</div><div class="time-btn">10:30</div><div class="time-btn">11:00</div>
+            <div class="time-btn">11:30</div>
+        </div>
+
+        <!-- Formulario -->
+        <form id="bookingForm">
+            <div class="form-group">
+                <label>Nombre y Apellido</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label>Tu WhatsApp</label>
+                <input type="tel" id="whatsapp" placeholder="Ej: 11 2345 6789" required>
+            </div>
+            <div class="form-group">
+                <label>Comentarios (Opcional)</label>
+                <textarea id="comments"></textarea>
+            </div>
+            <button type="submit" class="btn-submit">Solicitar turno</button>
+            <p class="footer-note">Los turnos quedan pendientes hasta que el estudio los confirme por WhatsApp.</p>
+        </form>
+    </div>
+
+    <script>
+        let selectedService = null;
+        let selectedDay = "Jueves 29 de Octubre";
+        let selectedTime = null;
+
+        // Seleccionar Servicio
+        document.querySelectorAll('.service-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.service-item').forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedService = item.querySelector('.service-name').innerText;
+            });
+        });
+
+        // Seleccionar Día
+        document.querySelectorAll('.day-card').forEach(card => {
+            card.addEventListener('click', () => {
+                document.querySelectorAll('.day-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                const dayName = card.querySelector('.day-name').innerText;
+                const dayNumber = card.querySelector('.day-number').innerText;
+                const dayMonth = card.querySelector('.day-month').innerText;
+                selectedDay = `${dayName} ${dayNumber} de ${dayMonth}`;
+            });
+        });
+
+        // Seleccionar Hora
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedTime = btn.innerText;
+            });
+        });
+
+        // Enviar Formulario
+        document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const whatsapp = document.getElementById('whatsapp').value;
+
+            if (!selectedService) return alert("Por favor, selecciona un servicio.");
+            if (!selectedTime) return alert("Por favor, selecciona un horario.");
+
+            const mensaje = `¡Turno solicitado con éxito! ???\n\n?? Nombre: ${name}\n?? WhatsApp: ${whatsapp}\n????? Servicio: ${selectedService}\n?? Día: ${selectedDay}\n? Horario: ${selectedTime}\n\n*Nota: El turno queda pendiente de confirmación por Turnos Nails Pro.*`;
+            alert(mensaje);
+        });
+    </script>
+</body>
+</html>
