@@ -20,26 +20,48 @@
         body { background-color: var(--bg-color); color: var(--text-dark); display: flex; justify-content: center; padding-bottom: 50px; }
         .app-container { width: 100%; max-width: 450px; background-color: var(--bg-color); padding: 20px; }
 
-        /* --- Header / Logo SVG --- */
+        /* --- Header / Logo SVG CORREGIDO --- */
         .logo-container { text-align: center; margin: 30px 0 40px 0; }
+        
         .logo-circle {
-            width: 150px; height: 150px; border: 1px solid var(--border-color); border-radius: 50%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            margin: 0 auto; background-color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            padding-top: 5px; /* Ajuste óptico */
+            width: 170px; 
+            height: 170px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 50%;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            margin: 0 auto; 
+            background-color: white; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden; /* Evita que cualquier texto largo se salga */
+            padding: 10px;
         }
 
-        .logo-svg { width: 55px; height: 55px; margin-bottom: 5px; }
+        .logo-svg { width: 45px; height: 45px; margin-bottom: 8px; }
         
         /* Degradado para el logo */
         .logo-svg path { stroke: url(#femGradient); }
         .logo-svg circle, .logo-svg line { stroke: var(--gold); fill: var(--gold); }
 
         .logo-title {
-            font-family: 'Playfair Display', serif; font-size: 20px; color: var(--primary-dark);
-            line-height: 1; font-weight: 600; letter-spacing: 0.5px; text-align: center;
+            font-family: 'Playfair Display', serif; 
+            font-size: 18px; /* Tamaño reducido para que no se salga */
+            color: var(--primary-dark);
+            line-height: 1.1; 
+            font-weight: 600; 
+            text-align: center;
+            margin-bottom: 4px;
         }
-        .logo-subtitle { font-size: 9px; letter-spacing: 2px; color: var(--gold); margin-top: 4px; text-transform: uppercase; text-align: center; }
+        
+        .logo-subtitle { 
+            font-size: 8px; 
+            letter-spacing: 1.5px; 
+            color: var(--gold); 
+            text-transform: uppercase; 
+            text-align: center; 
+        }
 
         .main-title { font-family: 'Playfair Display', serif; font-size: 24px; font-style: italic; margin-bottom: 25px; color: var(--text-dark); }
         .section-title { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; }
@@ -95,24 +117,21 @@
 
     <div class="app-container">
         
-        <!-- Logo Ficticio Mejorado -->
+        <!-- Logo Ficticio Centrado -->
         <div class="logo-container">
             <div class="logo-circle">
                 <svg class="logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Definimos el degradado rosa-dorado -->
                     <defs>
                         <linearGradient id="femGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#d68c9e;stop-opacity:1" />
                             <stop offset="100%" style="stop-color:#d4b574;stop-opacity:1" />
                         </linearGradient>
                     </defs>
-                    <!-- Letra N estilizada y centrada -->
                     <path d="M 35 70 L 35 30 L 65 70 L 65 30" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                    <!-- Destello femenino -->
                     <circle cx="72" cy="25" r="4" />
                     <path d="M 72 15 L 72 35 M 62 25 L 82 25" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
                 </svg>
-                <div class="logo-title">Turnos Nails Pro</div>
+                <div class="logo-title">Turnos Nails<br>Pro</div>
                 <div class="logo-subtitle">Studio & Beauty</div>
             </div>
         </div>
@@ -239,7 +258,7 @@
             if (!selectedService) return alert("Por favor, selecciona un servicio.");
             if (!selectedTime) return alert("Por favor, selecciona un horario.");
 
-            const mensaje = `¡Turno solicitado con éxito! ???\n\n?? Nombre: ${name}\n?? WhatsApp: ${whatsapp}\n????? Servicio: ${selectedService}\n?? Día: ${selectedDay}\n? Horario: ${selectedTime}\n\n*Nota: El turno queda pendiente de confirmación por Turnos Nails Pro.*`;
+            const mensaje = `¡Turno solicitado con éxito! 💅✨\n\n👤 Nombre: ${name}\n📱 WhatsApp: ${whatsapp}\n💆‍♀️ Servicio: ${selectedService}\n📅 Día: ${selectedDay}\n⏰ Horario: ${selectedTime}\n\n*Nota: El turno queda pendiente de confirmación por Turnos Nails Pro.*`;
             alert(mensaje);
         });
     </script>
