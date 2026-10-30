@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Turnos Nails Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f7f6f3; --panel-bg: #ffffff; --primary: #d68c9e; --primary-dark: #c07285;
+            --gold: #d4b574; --text-dark: #333333; --text-light: #777777; --border: #e0e0e0;
+            --success: #28a745; --danger: #dc3545;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-dark); display: flex; justify-content: center; padding-bottom: 50px; min-height: 100vh; }
+        
+        /* --- ESTILOS LOGIN --- */
+        #login-screen {
+            width: 100%; max-width: 400px; padding: 20px; display: flex; flex-direction: column; justify-content: center; min-height: 80vh;
+        }
+        .login-card {
+            background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-top: 4px solid var(--primary); text-align: center;
+        }
+        .login-card h2 { font-family: 'Playfair Display', serif; color: var(--primary-dark); margin-bottom: 20px; font-size: 24px; }
+        .login-card input {
+            width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px;
+        }
+        .login-card input:focus { outline: none; border-color: var(--primary); }
+        .btn-login { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: background 0.3s; }
+        .btn-login:hover { background: var(--primary-dark); }
+        .error-msg { color: var(--danger); font-size: 13px; margin-bottom: 15px; display: none; }
+
+        /* --- RESTO DEL PANEL ADMIN (Oculto por defecto) --- */
+        #admin-panel { display: none; width: 100%; max-width: 700px; padding: 20px; }
+        
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid var(--primary); }
+        .header-brand { display: flex; align-items: center; gap: 10px; }
+        .header-logo { width: 40px; height: 40px; }
+        .header h1 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--primary-dark); }
+        .btn-logout { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 500; }
+        .btn-logout:hover { background: var(--danger); color: white; }
+
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .tab-btn { flex: 1; padding: 12px 15px; background: var(--panel-bg); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: 500; white-space: nowrap; font-size: 13px; transition: all 0.2s; }
+        .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--panel-bg); border-radius: 10px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border-left: 4px solid var(--primary); }
+        .card-title { font-size: 16px; margin-bottom: 15px; color: var(--text-dark); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+        .appointment-info h3 { font-size: 16px; margin-bottom: 5px; }
+        .appointment-info p { font-size: 13px; color: var(--text-light); margin-bottom: 3px; }
+        .appointment-info strong { color: var(--text-dark); }
+        .actions { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-accept { background: var(--success); color: white; border: none; padding: 10px; border-radius: 6px; flex: 1; cursor: pointer; font-weight: 500; }
+        .btn-reject { background: var(--danger); color: white; border: none; padding: 10px; border-radius: 6px; flex: 1; cursor: pointer; font-weight: 500; }
+        .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-top: 10px; }
+        .status-confirmed { background: #d4edda; color: #155724; }
+
+        .form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .form-row label { font-size: 14px; flex: 1; }
+        .form-row input { width: 120px; padding: 10px; border: 1px solid var(--border); border-radius: 6px; text-align: right; font-size: 14px; }
+        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; margin-top: 10px; cursor: pointer; font-weight: 500; transition: background 0.3s;}
+        .btn-save:hover { background: var(--primary-dark); }
+
+        .time-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .time-chip { padding: 8px 12px; background: #e9ecef; border-radius: 20px; font-size: 13px; cursor: pointer; border: 1px solid transparent; user-select: none; }
+        .time-chip.disabled { background: #f8d7da; color: #721c24; border-color: #dc3545; text-decoration: line-through; }
+
+        .holiday-list { margin-top: 15px; }
+        .holiday-item { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .btn-delete { background: none; border: none; color: var(--danger); cursor: pointer; font-weight: bold; }
+
+        /* Estadísticas */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: white; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border-top: 3px solid var(--gold); }
+        .stat-box h4 { font-size: 12px; color: var(--text-light); text-transform: uppercase; margin-bottom: 10px; }
+        .stat-box .amount { font-size: 24px; font-weight: 700; color: var(--primary-dark); }
+        .chart-container { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .chart-bars { display: flex; align-items: flex-end; justify-content: space-between; height: 150px; padding-top: 20px; gap: 5px; }
+        .bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+        .bar { width: 100%; background: var(--gold); border-radius: 4px 4px 0 0; transition: height 0.5s ease; }
+        .bar-label { font-size: 10px; color: var(--text-light); margin-top: 5px; }
+        .history-table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+        .history-table th, .history-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        .history-table th { background: #f9f9f9; font-weight: 500; color: var(--text-light); }
+
+        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; opacity: 0; transition: opacity 0.3s, bottom 0.3s; }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+    </style>
+</head>
+<body>
+
+    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
+        <linearGradient id="femGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#d68c9e;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#d4b574;stop-opacity:1" />
+        </linearGradient>
+    </svg>
+
+    <!-- ================= PANTALLA DE LOGIN ================= -->
+    <div id="login-screen">
+        <div class="login-card">
+            <svg class="header-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 60px; height: 60px; margin: 0 auto 10px auto;">
+                <path d="M 35 70 L 35 30 L 65 70 L 65 30" stroke="url(#femGradient)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <circle cx="72" cy="25" r="4" fill="#d4b574" stroke="none" />
+            </svg>
+            <h2>Acceso Administrador</h2>
+            
+            <div id="loginError" class="error-msg">Correo o contraseña incorrectos.</div>
+            
+            <input type="email" id="adminEmail" placeholder="Correo electrónico">
+            <input type="password" id="adminPassword" placeholder="Contraseña">
+            
+            <button class="btn-login" onclick="checkLogin()">Ingresar al Panel</button>
+            <p style="margin-top: 15px; font-size: 12px; color: #777;">Demo: admin@turnosnailspro.com / admin123</p>
+        </div>
+    </div>
+
+    <!-- ================= PANEL DE ADMINISTRACIÓN ================= -->
+    <div id="admin-panel" class="admin-container">
+        
+        <div class="header">
+            <div class="header-brand">
+                <svg class="header-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 35 70 L 35 30 L 65 70 L 65 30" stroke="url(#femGradient)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+                <h1>Turnos Nails Pro</h1>
+            </div>
+            <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('tab-pendientes', this)">Pendientes</button>
+            <button class="tab-btn" onclick="openTab('tab-confirmados', this)">Confirmados</button>
+            <button class="tab-btn" onclick="openTab('tab-servicios', this)">Precios</button>
+            <button class="tab-btn" onclick="openTab('tab-agenda', this)">Agenda</button>
+            <button class="tab-btn" onclick="openTab('tab-estadisticas', this)">Estadísticas</button>
+        </div>
+
+        <!-- Pestaña Pendientes -->
+        <div id="tab-pendientes" class="tab-content active">
+            <div class="card" id="turno-1">
+                <div class="appointment-info">
+                    <h3>Lucía Gómez</h3>
+                    <p><strong>Servicio:</strong> Manicura semipermanente ($17.000)</p>
+                    <p><strong>Fecha:</strong> Jueves 29 de Oct - 09:00 hs</p>
+                    <p><strong>WhatsApp:</strong> 11 2345 6789</p>
+                </div>
+                <div class="actions" id="actions-1">
+                    <button class="btn-accept" onclick="manageAppointment(1, 'accept')">? Aceptar</button>
+                    <button class="btn-reject" onclick="manageAppointment(1, 'reject')">? Rechazar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pestaña Confirmados -->
+        <div id="tab-confirmados" class="tab-content">
+            <div class="card" style="border-left-color: var(--success);">
+                <div class="appointment-info">
+                    <h3>Valentina Ruiz</h3>
+                    <p><strong>Servicio:</strong> Pedicura ($19.000)</p>
+                    <p><strong>Fecha:</strong> Viernes 30 de Oct - 11:00 hs</p>
+                </div>
+                <span class="status-badge status-confirmed">Confirmado</span>
+            </div>
+        </div>
+
+        <!-- Pestaña Servicios -->
+        <div id="tab-servicios" class="tab-content">
+            <div class="card">
+                <h3 class="card-title">Editar Precios</h3>
+                <div class="form-row"><label>Manicura semipermanente</label><input type="number" value="17000"></div>
+                <div class="form-row"><label>Pedicura</label><input type="number" value="19000"></div>
+                <div class="form-row"><label>Capping Gel</label><input type="number" value="18000"></div>
+                <button class="btn-save" onclick="showToast('Precios actualizados correctamente.')">Guardar Precios</button>
+            </div>
+        </div>
+
+        <!-- Pestaña Agenda -->
+        <div id="tab-agenda" class="tab-content">
+            <div class="card">
+                <h3 class="card-title">Horarios</h3>
+                <div class="time-chips">
+                    <div class="time-chip" onclick="toggleTime(this)">08:30</div>
+                    <div class="time-chip" onclick="toggleTime(this)">09:00</div>
+                    <div class="time-chip" onclick="toggleTime(this)">09:30</div>
+                </div>
+            </div>
+            <div class="card" style="border-left-color: var(--danger);">
+                <h3 class="card-title">Días Bloqueados</h3>
+                <div class="form-row" style="gap: 10px;">
+                    <input type="date" id="holidayDate" style="width: 100%;">
+                    <button class="btn-save" style="width: auto; margin: 0; padding: 10px 15px;" onclick="addHoliday()">Bloquear</button>
+                </div>
+                <div class="holiday-list" id="holidayList"></div>
+            </div>
+        </div>
+
+        <!-- Pestaña Estadísticas -->
+        <div id="tab-estadisticas" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h4>Facturación Mes</h4>
+                    <div class="amount">$ 450.000</div>
+                </div>
+                <div class="stat-box">
+                    <h4>Turnos Realizados</h4>
+                    <div class="amount">28</div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h4 style="font-size: 12px; color: #777; margin-bottom: 10px;">Ranking de Facturación (Últimos 5 meses)</h4>
+                <div class="chart-bars">
+                    <div class="bar-wrapper"><div class="bar" style="height: 60%; background: #c07285;"></div><div class="bar-label">Jun</div></div>
+                    <div class="bar-wrapper"><div class="bar" style="height: 75%; background: #c07285;"></div><div class="bar-label">Jul</div></div>
+                    <div class="bar-wrapper"><div class="bar" style="height: 50%; background: #c07285;"></div><div class="bar-label">Ago</div></div>
+                    <div class="bar-wrapper"><div class="bar" style="height: 90%; background: #c07285;"></div><div class="bar-label">Sep</div></div>
+                    <div class="bar-wrapper"><div class="bar" style="height: 85%; background: #d4b574;"></div><div class="bar-label">Oct</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">Notificación</div>
+
+    <script>
+        // --- SISTEMA DE LOGIN SIMULADO ---
+        // Credenciales ficticias
+        const ADMIN_EMAIL = "admin@turnosnailspro.com";
+        const ADMIN_PASS = "admin123";
+
+        // Revisar si ya hay sesión iniciada al cargar la página
+        window.onload = function() {
+            if (localStorage.getItem("isLoggedIn") === "true") {
+                showAdminPanel();
+            }
+        };
+
+        function checkLogin() {
+            const email = document.getElementById('adminEmail').value;
+            const pass = document.getElementById('adminPassword').value;
+            const errorMsg = document.getElementById('loginError');
+
+            if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+                // Guardamos la sesión en el navegador
+                localStorage.setItem("isLoggedIn", "true");
+                showAdminPanel();
+                errorMsg.style.display = 'none';
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function showAdminPanel() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('admin-panel').style.display = 'block';
+        }
+
+        function logout() {
+            // Borramos la sesión
+            localStorage.removeItem("isLoggedIn");
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('admin-panel').style.display = 'none';
+            // Limpiamos los inputs
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // --- Lógica de Pestañas ---
+        function openTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // --- Lógica de Turnos ---
+        function manageAppointment(id, action) {
+            document.getElementById(`actions-${id}`).style.display = 'none';
+            if (action === 'accept') {
+                showToast("Turno aceptado y movido a Confirmados.");
+            } else {
+                showToast("Turno rechazado. Horario liberado.");
+            }
+        }
+
+        // --- Lógica de Horarios y Feriados ---
+        function toggleTime(element) {
+            element.classList.toggle('disabled');
+        }
+
+        let holidays = ["2026-10-31"];
+        function renderHolidays() {
+            const list = document.getElementById('holidayList');
+            list.innerHTML = '';
+            holidays.forEach((date, index) => {
+                const [year, month, day] = date.split('-');
+                const div = document.createElement('div');
+                div.className = 'holiday-item';
+                div.innerHTML = `<span>?? ${day}/${month}/${year}</span><button class="btn-delete" onclick="removeHoliday(${index})">Eliminar</button>`;
+                list.appendChild(div);
+            });
+        }
+        function addHoliday() {
+            const dateInput = document.getElementById('holidayDate').value;
+            if (dateInput && !holidays.includes(dateInput)) {
+                holidays.push(dateInput);
+                renderHolidays();
+                showToast("Día bloqueado exitosamente.");
+            }
+        }
+        function removeHoliday(index) {
+            holidays.splice(index, 1);
+            renderHolidays();
+        }
+
+        // --- Toast ---
+        function showToast(message) {
+            const toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        renderHolidays();
+    </script>
+</body>
+</html>
