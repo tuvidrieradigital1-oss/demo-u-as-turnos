@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Prueba - Jessi</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: sans-serif; background: #f7f6f3; padding: 20px; max-width: 600px; margin: 0 auto; }
+        .card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #d68c9e; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        button { background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Turnos de Jessi (Prueba)</h2>
+    <div id="lista"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://msxvgjzozxzijbnnjrb.supabase.co'; 
+        const SUPABASE_ANON_KEY = 'TU_ANON_KEY_AQUI'; // <--- PEGÁ TU CLAVE ACÁ
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function cargarTurnos() {
+            const { data, error } = await supabase.from('turnos').select('*').eq('salon', 'salon-jessi').order('id', {ascending: false});
+            const lista = document.getElementById('lista');
+            lista.innerHTML = '';
+            if (data && data.length > 0) {
+                data.forEach(t => {
+                    lista.innerHTML += `
+                        <div class="card">
+                            <h3>${t.nombre}</h3>
+                            <p>Servicio: ${t.servicio} ($${t.precio})</p>
+                            <p>Fecha: ${t.fecha} - Estado: ${t.estado}</p>
+                            ${t.estado === 'pendiente' ? `<button onclick="aceptar('${t.id}')">Aceptar Turno</button>` : ''}
+                        </div>
+                    `;
+                });
+            } else {
+                lista.innerHTML = '<p>No hay turnos todavía. Hacé una reserva en el index.</p>';
+            }
+        }
+
+        async function aceptar(id) {
+            await supabase.from('turnos').update({estado: 'confirmado'}).eq('id', id);
+            cargarTurnos();
+        }
+
+        cargarTurnos();
+    </script>
+</body>
+</html>
